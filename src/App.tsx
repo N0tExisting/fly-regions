@@ -1,5 +1,6 @@
 import { SolidLeafletMap } from "solidjs-leaflet";
-import data from "../data/fly-regions.json";
+import data from "./data/fly-regions.json";
+import type { Region, PropsWithRegion } from "./data/region";
 import MdiMapMarker from "~icons/mdi/map-marker";
 import MdiMapMarkerStar from "~icons/mdi/map-marker-star";
 import {
@@ -11,12 +12,7 @@ import {
   runWithOwner,
 } from "solid-js";
 
-type Location = (typeof data)[number];
-
-interface PropsWithLocation {
-  loc: Location;
-}
-const Popup: Component<PropsWithLocation> = (p) => {
+const Popup: Component<PropsWithRegion> = (p) => {
   return (
     <section class="text-left">
       <h3 class="mb-1">{p.loc.name}</h3>
@@ -28,11 +24,11 @@ const Popup: Component<PropsWithLocation> = (p) => {
   );
 };
 
-const Magic = (l: Location) => {
+const Magic = (l: Region) => {
   return l.requiresPaidPlan ? MdiMapMarkerStar : MdiMapMarker;
 };
 
-const Icon: VoidComponent<PropsWithLocation> = (p) => {
+const Icon: VoidComponent<PropsWithRegion> = (p) => {
   // For some reason this also breaks with `Dynamic`
   const Marker = Magic(p.loc);
   return (
@@ -46,8 +42,8 @@ const Icon: VoidComponent<PropsWithLocation> = (p) => {
   );
 };
 
-function Marker(o: Owner | null, l: typeof import("leaflet"), loc: Location) {
-  console.log(Icon.bind(null, { loc }));
+function Marker(o: Owner | null, l: typeof import("leaflet"), loc: Region) {
+  //console.log(Icon.bind(null, { loc }));
   const marker = l.marker([loc.latitude, loc.longitude], {
     title: loc.code,
     //attribution: loc.code,
