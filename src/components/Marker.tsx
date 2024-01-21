@@ -1,13 +1,12 @@
-import type { Region } from "../data/region";
 import { type Owner, runWithOwner } from "solid-js";
+
+import type { Region } from "../data/region";
+
 import Popup from "./Popup";
 import Icon from "./Icon";
 
-export default function Marker(
-  o: Owner | null,
-  l: typeof import("leaflet"),
-  loc: Region
-) {
+export type Leaflet = typeof import("leaflet");
+export default function Marker(o: Owner | null, l: Leaflet, loc: Region) {
   //console.log(Icon.bind(null, { loc }));
   const marker = l.marker([loc.latitude, loc.longitude], {
     title: loc.code,
@@ -20,8 +19,7 @@ export default function Marker(
     }),
   });
   marker.bindTooltip(
-    // @ts-expect-error
-    (_layer) => runWithOwner(o, () => <Popup loc={loc} />)() as HTMLElement
+    (_layer) => runWithOwner(o, Popup.bind(null, { loc })) as HTMLElement
   );
   /*marker.bindPopup(
     (_layer) => runWithOwner(o, () => <Popup loc={loc} />)() as HTMLElement
