@@ -1,4 +1,3 @@
-//import { createSignal } from "solid-js";
 import { SolidLeafletMap } from "solidjs-leaflet";
 import data from "../data/fly-regions.json";
 import MdiMapMarker from "~icons/mdi/map-marker";
@@ -6,10 +5,11 @@ import MdiMapMarkerStar from "~icons/mdi/map-marker-star";
 import {
   type Component,
   type VoidComponent,
+  //type ComponentProps,
+  type Owner,
   getOwner,
   runWithOwner,
 } from "solid-js";
-import { Dynamic } from "solid-js/web";
 
 type Location = (typeof data)[number];
 
@@ -28,10 +28,15 @@ const Popup: Component<PropsWithLocation> = (p) => {
   );
 };
 
+const Magic = (l: Location) => {
+  return l.requiresPaidPlan ? MdiMapMarkerStar : MdiMapMarker;
+};
+
 const Icon: VoidComponent<PropsWithLocation> = (p) => {
+  // For some reason this also breaks with `Dynamic`
+  const Marker = Magic(p.loc);
   return (
-    <Dynamic
-      component={p.loc.requiresPaidPlan ? MdiMapMarkerStar : MdiMapMarker}
+    <Marker
       class="h-10 w-10"
       classList={{
         "text-blue-5": !p.loc.gatewayAvailable,
@@ -41,8 +46,30 @@ const Icon: VoidComponent<PropsWithLocation> = (p) => {
   );
 };
 
+function Marker(o: Owner | null, l: typeof import("leaflet"), loc: Location) {
+  console.log(Icon.bind(null, { loc }));
+  const marker = l.marker([loc.latitude, loc.longitude], {
+    title: loc.code,
+    //attribution: loc.code,
+    icon: new l.DivIcon({
+      html: runWithOwner(o, Icon.bind(null, { loc })) as HTMLElement,
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+      className: "bg-transparent",
+    }),
+  });
+  marker.bindTooltip(
+    // @ts-expect-error
+    (_lay) => runWithOwner(o, () => <Popup loc={loc} />)() as HTMLElement
+  );
+  /*marker.bindPopup(
+    (_lay) => runWithOwner(o, () => <Popup loc={loc} />)() as HTMLElement
+  );*/
+  return marker;
+}
 function App() {
   const o = getOwner();
+  const getMarker = Marker.bind(null, o);
   return (
     <SolidLeafletMap
       center={[27.5, 12.5]}
@@ -53,30 +80,10 @@ function App() {
       width="100vw"
       zoom={3}
       onMapReady={(l, m) => {
+        const marker = getMarker.bind(null, l);
         data.forEach((loc) => {
-          const marker = l.marker([loc.latitude, loc.longitude], {
-            title: loc.code,
-            attribution: loc.code,
-            icon: new l.DivIcon({
-              html: runWithOwner(o, () => <Icon loc={loc} />) as HTMLElement,
-              iconSize: [40, 40],
-              iconAnchor: [20, 40],
-              className: "bg-transparent",
-            }),
-          });
-          marker.addTo(m);
-          marker.bindPopup(
-            (_lay) => runWithOwner(o, () => <Popup loc={loc} />) as HTMLElement
-          );
+          marker(loc).addTo(m);
         });
-        /*
-        const marker = l
-          .marker([63.0, 13.0], {
-            icon,
-          })
-          .addTo(m);
-        marker.bindPopup("Hello World!");
-        */
       }}
     />
   );
