@@ -1,0 +1,12 @@
+query {
+  platform {
+    regions {
+      code
+      name
+      latitude
+      longitude
+      gatewayAvailable
+      requiresPaidPlan
+    }
+  }
+}

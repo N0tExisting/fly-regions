@@ -1,0 +1,8 @@
+export interface Region {
+  code: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  gatewayAvailable: boolean;
+  requiresPaidPlan: boolean;
+}

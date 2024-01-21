@@ -1,0 +1,35 @@
+{
+  "name": "fly-regions",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4",
+    "solid-js": "^1.8.7",
+    "solidjs-leaflet": "^1.0.2"
+  },
+  "devDependencies": {
+    "@iconify/json": "^2.2.171",
+    "@julr/unocss-preset-forms": "^0.1.0",
+    "@julr/unocss-preset-heropatterns": "^1.0.2",
+    "@types/leaflet": "^1.9.8",
+    "@unocss/preset-web-fonts": "^0.58.3",
+    "@unocss/preset-wind": "^0.58.3",
+    "@unocss/transformer-compile-class": "^0.58.3",
+    "@unocss/transformer-directives": "^0.58.3",
+    "@unocss/transformer-variant-group": "^0.58.3",
+    "typescript": "^5.2.2",
+    "unocss": "^0.58.3",
+    "unocss-preset-scrollbar": "^0.3.0",
+    "unocss-transformer-attribute-values-group": "^0.2.4",
+    "unplugin-icons": "^0.18.2",
+    "vite": "^5.0.8",
+    "vite-plugin-solid": "^2.8.0",
+    "vite-tsconfig-paths": "^4.3.1"
+  }
+}
