@@ -18,11 +18,23 @@ export const GitAttribution = () => (
   </a>
 );
 
-const Spacer = () => <span> | </span>;
+export const OSMAttribution = () => (
+  <a
+    href="https://openstreetmap.org/copyright"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    OpenStreetMap
+  </a>
+);
+
+export const Spacer = () => <span> | </span>;
 
 export const Attrbutions = () => {
   return (
     <>
+      <Spacer />
+      <OSMAttribution />
       <Spacer />
       <FlyAttribution />
       <Spacer />
