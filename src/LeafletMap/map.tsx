@@ -42,8 +42,7 @@ export function SolidLeafletMap(props: SolidLeafletMapProps) {
   let map;
 
   onMount(async () => {
-    const imp = await import("leaflet");
-    const L = imp.default;
+    const L = (await import("leaflet")).default;
     map = L.map(mergedProps.id, mergedProps.mapOptions).setView(
       mergedProps.center,
       mergedProps.zoom
