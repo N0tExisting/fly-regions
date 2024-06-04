@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "antfu.unocss",
+    "graphql.vscode-graphql",
+    "esbenp.prettier-vscode"
+  ]
+}
