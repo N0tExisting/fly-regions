@@ -1,6 +1,7 @@
 import { getOwner } from "solid-js";
 import { SolidLeafletMap } from "solidjs-leaflet";
 import Marker from "./components/Marker";
+import renderAttributons from "./components/Atributions";
 import data from "./data/fly-regions.json";
 
 function App() {
@@ -8,7 +9,7 @@ function App() {
   const getMarker = Marker.bind(null, o);
   return (
     <SolidLeafletMap
-      center={[27.5, 12.5]}
+      center={[25, 12.5]}
       id="map"
       // @ts-expect-error
       height="100vh"
@@ -20,6 +21,7 @@ function App() {
         data.forEach((loc) => {
           marker(loc).addTo(m);
         });
+        renderAttributons(o, m.attributionControl);
       }}
     />
   );
