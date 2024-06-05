@@ -1,9 +1,13 @@
-import { createToken } from "@solid-primitives/jsx-tokenizer";
+import {
+  type JSXTokenizer,
+  createToken,
+} from "@solid-primitives/jsx-tokenizer";
 import {
   type FlowProps,
   splitProps,
   createRenderEffect,
   mergeProps,
+  onCleanup,
   //children,
 } from "solid-js";
 import {
@@ -14,7 +18,7 @@ import {
   Icon as LIcon,
 } from "leaflet";
 import { trackDeep } from "@solid-primitives/deep";
-import { type TokenType, layerTokenizer } from "./tokens";
+import { type TokenType, type SwitchClassName, layerTokenizer } from "./tokens";
 
 export type ImgIcon = LIcon<LIconOptions>;
 export type DisplayIcon = ImgIcon | LDivIcon;
@@ -24,10 +28,6 @@ export interface IconData extends TokenType<"icon"> {
   icon: DisplayIcon;
 }
 
-export type SwitchClassName<T extends { className?: string }> = Omit<
-  T,
-  "className"
-> & { class?: T["className"] };
 export type ForceNever<T, K extends keyof T> = Omit<T, K> & Record<K, never>;
 
 export type ImgIconOptions = SwitchClassName<LIconOptions> & {
@@ -41,11 +41,14 @@ export type DivIconProps = FlowProps<DivIconOptions>;
 
 export type IconProps = DivIconProps | ImgIconOptions;
 export const Icon = createToken<IconProps, IconData>(
-  layerTokenizer,
+  layerTokenizer as JSXTokenizer<IconData>,
   (props: IconProps) => {
     const icon = props.children
       ? createDivIcon(props)
       : createImageIcon(props as ImgIconOptions);
+
+    onCleanup(icon.remove);
+
     return {
       type: "icon",
       props,

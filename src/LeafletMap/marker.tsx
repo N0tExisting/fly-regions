@@ -12,6 +12,8 @@ import {
   Marker as LMarker,
 } from "leaflet";
 import { type TokenType, mapTokenizer, layerTokenizer } from "./tokens";
+import type { TooltipData } from "./tooltip";
+import type { IconData } from "./icon";
 
 export interface MarkerData extends TokenType<"marker"> {
   props: MarkerProps;
@@ -59,10 +61,22 @@ export const Marker = createToken(
 
     const tokens = resolveTokens(layerTokenizer, () => content.children);
 
+    let setIcon = false;
     mapArray(tokens, (token) => {
       switch (token.data.type) {
         case "icon":
-          // TODO
+          if (setIcon) throw new Error("You Have already provided an Icon");
+          createRenderEffect(() =>
+            marker.setIcon((token.data as IconData).icon)
+          );
+          setIcon = true;
+          break;
+        case "tooltip":
+          if (marker.getTooltip())
+            throw new Error("You Have already provided a tooltip");
+          createRenderEffect(() =>
+            marker.bindTooltip((token.data as TooltipData).tooltip)
+          );
           break;
       }
     });
