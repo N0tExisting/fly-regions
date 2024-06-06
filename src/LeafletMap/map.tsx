@@ -58,6 +58,6 @@ export function SolidLeafletMap(props: SolidLeafletMapProps) {
     <div
       style={{ height: mergedProps.height, width: mergedProps.width }}
       id={mergedProps.id}
-    ></div>
+    />
   );
 }

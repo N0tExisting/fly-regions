@@ -17,7 +17,8 @@ import {
   type TooltipOptions as LTooltipOptions,
 } from "leaflet";
 import { trackDeep } from "@solid-primitives/deep";
-import { type TokenType, layerTokenizer, SwitchClassName } from "./tokens";
+import { type TokenType, layerTokenizer } from "./tokens";
+import { SwitchClassName } from "./utils/className";
 
 export interface TooltipData extends TokenType<"tooltip"> {
   tooltip: LTooltip;

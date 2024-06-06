@@ -18,7 +18,8 @@ import {
   Icon as LIcon,
 } from "leaflet";
 import { trackDeep } from "@solid-primitives/deep";
-import { type TokenType, type SwitchClassName, layerTokenizer } from "./tokens";
+import { type TokenType, layerTokenizer } from "./tokens";
+import { type SwitchClassName } from "./utils/className";
 
 export type ImgIcon = LIcon<LIconOptions>;
 export type DisplayIcon = ImgIcon | LDivIcon;
