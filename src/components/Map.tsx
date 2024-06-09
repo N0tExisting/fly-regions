@@ -12,7 +12,7 @@ export default function Map() {
     <div ref={setTarget} class="size-screen">
       <LMap center={[27.5, 12.5]} zoom={3} el={target()}>
         <LTileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        <For each={data}>{(loc) => <Marker loc={loc} />}</For>
+        <For each={data}>{(loc) => <Marker {...loc} />}</For>
         <Attributions />
       </LMap>
     </div>

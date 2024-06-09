@@ -8,7 +8,3 @@ export interface Region {
 }
 
 export type Regions = Region[];
-
-export interface PropsWithRegion {
-  loc: Region;
-}
