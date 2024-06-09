@@ -1,63 +1,71 @@
-import type { TileLayerOptions, Map as LMap } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { mergeProps, onMount } from "solid-js";
-import type * as L from "leaflet";
+import {
+  Map as LMap,
+  type TileLayer as LTileLayer,
+  type MapOptions as LMapOptions,
+} from "leaflet";
 
-export type SolidLeafletMapProps = {
-  /** The ID given to the div element and used by leaflet */
-  id: string;
-  /** latitude and longitude coordinates of the map */
-  center: [number, number];
-  /** Default zoom of the map */
-  zoom?: number;
-  /** The width of the map in pixels or percentage*/
-  width?: `${number}px` | `${number}%`;
-  /** The height of the map in pixels or percentage*/
-  height?: `${number}px` | `${number}%`;
-  /** Tile layer options */
-  tileLayer?: {
-    /** Where to get the tiles from. Defaults to openstreetmap */
-    urlTemplate?: string;
-    options?: TileLayerOptions;
-  };
-  /** Map options passed to default configuration of the map setup */
-  mapOptions?: Omit<L.MapOptions, "zoom" | "center">;
-  /** Callback function that is ran after map is configured. */
-  onMapReady?: (leaflet: typeof L, map: LMap) => void;
-};
-export function SolidLeafletMap(props: SolidLeafletMapProps) {
-  const mergedProps = mergeProps(
-    {
-      width: "1000px",
-      height: "1000px",
-      zoom: 5,
-      tileLayer: {
-        urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-        options: undefined,
-      },
-    },
-    props
-  );
+import {
+  type FlowProps,
+  type FlowComponent,
+  splitProps,
+  createRenderEffect,
+  mapArray,
+  onCleanup,
+} from "solid-js";
+import { resolveTokens } from "@solid-primitives/jsx-tokenizer";
+import { createSubRoot } from "@solid-primitives/rootless";
+import { trackDeep } from "@solid-primitives/deep";
 
-  let map;
+import { mapTokenizer } from "./tokens";
+import { type LAttribution } from "./attribution";
 
-  onMount(async () => {
-    const L = (await import("leaflet")).default;
-    map = L.map(mergedProps.id, mergedProps.mapOptions).setView(
-      mergedProps.center,
-      mergedProps.zoom
-    );
-    L.tileLayer(
-      mergedProps.tileLayer.urlTemplate!,
-      mergedProps.tileLayer.options
-    ).addTo(map);
-    mergedProps.onMapReady && mergedProps.onMapReady(L, map);
+export interface MapProps extends FlowProps<LMapOptions> {
+  el: HTMLElement;
+}
+
+export const Map: FlowComponent<MapProps> = (props: MapProps) => {
+  const [, opts] = splitProps(props, ["children", "el"]);
+  const map = new LMap(props.el, opts);
+
+  const tokens = resolveTokens(mapTokenizer, () => props.children);
+
+  let tile: LTileLayer | undefined;
+  let attribution: LAttribution | undefined;
+  mapArray(tokens, ({ data }) => {
+    switch (data.type) {
+      case "tile-layer":
+        if (tile) throw new Error("You already have a TileLayer in the map");
+        createSubRoot((yeet) => {
+          data.tiles.addTo(map);
+          tile = data.tiles;
+          onCleanup(() => (tile = undefined));
+          data.tiles.addOneTimeEventListener("remove", yeet);
+        });
+        break;
+      case "attribution":
+        if (attribution)
+          throw new Error("You already have an Attribution in the map");
+        createSubRoot((yeet) => {
+          data.attribution.addTo(map);
+          attribution = data.attribution;
+          onCleanup(() => (attribution = undefined));
+          data.attribution.addOneTimeEventListener("remove", yeet);
+        });
+        break;
+      case "marker":
+        data.marker.addTo(map);
+        break;
+    }
   });
 
-  return (
-    <div
-      style={{ height: mergedProps.height, width: mergedProps.width }}
-      id={mergedProps.id}
-    />
-  );
-}
+  createRenderEffect(() => opts.zoom && map.setZoom(opts.zoom));
+  createRenderEffect(() => opts.minZoom && map.setMinZoom(opts.minZoom));
+  createRenderEffect(() => opts.maxZoom && map.setMaxZoom(opts.maxZoom));
+  createRenderEffect(() => opts.center && map.setView(opts.center));
+  createRenderEffect(() => (map.options = trackDeep(opts)));
+
+  onCleanup(map.remove);
+
+  return null;
+};

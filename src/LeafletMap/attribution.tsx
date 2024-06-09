@@ -23,6 +23,7 @@ export type SlimAttribution = Omit<
 >;
 export class LAttribution extends Control.Attribution {
   #signal = createSignal<HTMLElement>();
+  #removeHandlers = new Set<() => void>();
   get el() {
     return this.#signal[0]();
   }
@@ -35,6 +36,17 @@ export class LAttribution extends Control.Attribution {
     // Remove the event listeners
     super.onRemove!(map);
     return el;
+  }
+  addOneTimeEventListener(_event: "remove", handler: () => void): this {
+    this.#removeHandlers.add(handler);
+    return this;
+  }
+  //? We need an event handler for unmounting the control
+  remove(): this {
+    this.#removeHandlers.forEach((handle) => handle());
+    this.#removeHandlers.clear();
+    this.#signal[1](undefined);
+    return super.remove();
   }
   // skip calling the super's `onRemove` beacause we already did it in the `onAdd`
   override onRemove() {}
