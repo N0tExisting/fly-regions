@@ -1,5 +1,6 @@
 import { type Component, createMemo, Show } from "solid-js";
 import type { PropsWithRegion } from "../data/region";
+import { LTooltip } from "../solid-map";
 
 const Popup: Component<PropsWithRegion> = (p) => {
   const locationName = createMemo(() =>
@@ -9,7 +10,7 @@ const Popup: Component<PropsWithRegion> = (p) => {
   const country = createMemo(() => locationName()[1]);
   const isCityState = createMemo(() => city() === country());
   return (
-    <section class="text-left p-2 pt-1">
+    <LTooltip class="text-left p-2 pt-1">
       <h3 class="text-lg leading-none">
         {city()}
         <Show when={!isCityState()}>
@@ -23,7 +24,7 @@ const Popup: Component<PropsWithRegion> = (p) => {
         <li>Premium: {p.loc.requiresPaidPlan.toString()}</li>
         <li>Gateway: {p.loc.gatewayAvailable.toString()}</li>
       </ul>
-    </section>
+    </LTooltip>
   );
 };
 
