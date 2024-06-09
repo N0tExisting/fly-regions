@@ -17,6 +17,7 @@ import {
   Marker as LMarker,
 } from "leaflet";
 import { type TokenType, mapTokenizer, layerTokenizer } from "./tokens";
+import { createSubRoot } from "@solid-primitives/rootless";
 
 export interface MarkerData extends TokenType<"marker"> {
   props: MarkerProps;
@@ -69,8 +70,16 @@ export const Marker = createToken<MarkerProps, MarkerData>(
       switch (data.type) {
         case "icon":
           if (setIcon) throw new Error("You Have already provided an Icon");
-          createRenderEffect(() => marker.setIcon(data.icon));
-          setIcon = true;
+          // FIXME: Cancel render effect when the icon is removed?
+          createSubRoot((yeet) => {
+            createRenderEffect(() => marker.setIcon(data.icon));
+
+            onCleanup(() => (setIcon = false));
+
+            data.icon.addOneTimeEventListener("remove", yeet);
+
+            setIcon = true;
+          });
           break;
         case "tooltip":
           if (marker.getTooltip())

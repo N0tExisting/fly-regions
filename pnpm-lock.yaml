@@ -14,6 +14,9 @@ importers:
       '@solid-primitives/jsx-tokenizer':
         specifier: ^1.0.10
         version: 1.0.10(solid-js@1.8.17)
+      '@solid-primitives/rootless':
+        specifier: ^1.4.5
+        version: 1.4.5(solid-js@1.8.17)
       leaflet:
         specifier: ^1.9.4
         version: 1.9.4
@@ -663,6 +666,11 @@ packages:
 
   '@solid-primitives/memo@1.3.8':
     resolution: {integrity: sha512-U75pfLFSxFmM2xbx1+2XPPyWbaXrnUFF10spbFuOUgJ7azrC+4y+FnrVi4RKqHw9gftd8aKQuTiyMQq468YLQw==}
+    peerDependencies:
+      solid-js: ^1.6.12
+
+  '@solid-primitives/rootless@1.4.5':
+    resolution: {integrity: sha512-GFJE9GC3ojx0aUKqAUZmQPyU8fOVMtnVNrkdk2yS4kd17WqVSpXpoTmo9CnOwA+PG7FTzdIkogvfLQSLs4lrww==}
     peerDependencies:
       solid-js: ^1.6.12
 
@@ -2036,6 +2044,11 @@ snapshots:
   '@solid-primitives/memo@1.3.8(solid-js@1.8.17)':
     dependencies:
       '@solid-primitives/scheduled': 1.4.3(solid-js@1.8.17)
+      '@solid-primitives/utils': 6.2.3(solid-js@1.8.17)
+      solid-js: 1.8.17
+
+  '@solid-primitives/rootless@1.4.5(solid-js@1.8.17)':
+    dependencies:
       '@solid-primitives/utils': 6.2.3(solid-js@1.8.17)
       solid-js: 1.8.17
 

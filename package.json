@@ -11,6 +11,7 @@
   "dependencies": {
     "@solid-primitives/deep": "^0.2.8",
     "@solid-primitives/jsx-tokenizer": "^1.0.10",
+    "@solid-primitives/rootless": "^1.4.5",
     "leaflet": "^1.9.4",
     "solid-js": "^1.8.17",
     "solidjs-leaflet": "^1.0.2"
