@@ -22,7 +22,7 @@ export type LeafletAttrProps = AttributionProps & {
   uaFlag?: boolean;
 };
 
-export const LeafletAttr = (props: LeafletAttrProps) => {
+export const LeafletAttribution = (props: LeafletAttrProps) => {
   const [, aProps] = splitProps(props, ["uaFlag"]);
   return (
     <a
