@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { defineConfig, presetTypography } from "unocss";
 import transformerAttributeValuesGroup from "unocss-transformer-attribute-values-group";
 import transformerCompileClass from "@unocss/transformer-compile-class";
@@ -11,6 +12,14 @@ import presetWind from "@unocss/preset-wind";
 
 export default defineConfig({
   // ...UnoCSS options
+  preflights: [
+    {
+      getCSS() {
+        const path = require.resolve("@unocss/reset/tailwind-compat.css");
+        return readFile(path, { encoding: "utf8" });
+      },
+    },
+  ],
   presets: [
     presetTypography(),
     presetWebFonts(),

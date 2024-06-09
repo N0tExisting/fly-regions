@@ -20,6 +20,7 @@
     "@types/leaflet": "^1.9.12",
     "@unocss/preset-web-fonts": "^0.58.9",
     "@unocss/preset-wind": "^0.58.9",
+    "@unocss/reset": "^0.60.4",
     "@unocss/transformer-compile-class": "^0.58.9",
     "@unocss/transformer-directives": "^0.58.9",
     "@unocss/transformer-variant-group": "^0.58.9",

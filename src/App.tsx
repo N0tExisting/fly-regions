@@ -9,7 +9,7 @@ function App() {
   const getMarker = Marker.bind(null, o);
   return (
     <SolidLeafletMap
-      center={[25, 12.5]}
+      center={[27.5, 12.5]}
       id="map"
       // @ts-expect-error
       height="100vh"
