@@ -29,7 +29,8 @@ export interface IconData extends TokenType<"icon"> {
   icon: DisplayIcon;
 }
 
-export type ForceNever<T, K extends keyof T> = Omit<T, K> & Record<K, never>;
+export type ForceNever<T, K extends keyof T> = Omit<T, K> &
+  Partial<Record<K, never>>;
 
 export type ImgIconOptions = SwitchClassName<LIconOptions> & {
   children?: never;
