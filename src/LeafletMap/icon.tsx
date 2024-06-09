@@ -19,7 +19,7 @@ import {
 } from "leaflet";
 import { trackDeep } from "@solid-primitives/deep";
 import { type TokenType, layerTokenizer } from "./tokens";
-import { type SwitchClassName } from "./utils/className";
+import { switchClassName, type SwitchClassName } from "./utils/className";
 
 export type ImgIcon = LIcon<LIconOptions>;
 export type DisplayIcon = ImgIcon | LDivIcon;
@@ -32,22 +32,25 @@ export interface IconData extends TokenType<"icon"> {
 export type ForceNever<T, K extends keyof T> = Omit<T, K> &
   Partial<Record<K, never>>;
 
-export type ImgIconOptions = SwitchClassName<LIconOptions> & {
+export type ImgIconOptions = LIconOptions & {
   children?: never;
 };
+export type ImgIconProps = SwitchClassName<ImgIconOptions>;
+
 export type DivIconOptions = ForceNever<
-  SwitchClassName<LDivIconOptions>,
+  LDivIconOptions,
   "iconRetinaUrl" | "iconUrl" | "html"
 >;
-export type DivIconProps = FlowProps<DivIconOptions>;
+export type DivIconProps = FlowProps<SwitchClassName<DivIconOptions>>;
 
-export type IconProps = DivIconProps | ImgIconOptions;
+export type IconProps = DivIconProps | ImgIconProps;
+
 export const Icon = createToken<IconProps, IconData>(
   layerTokenizer as JSXTokenizer<IconData>,
   (props: IconProps) => {
     const icon = props.children
       ? createDivIcon(props)
-      : createImageIcon(props as ImgIconOptions);
+      : createImageIcon(props as ImgIconProps);
 
     onCleanup(icon.remove);
 
@@ -60,15 +63,18 @@ export const Icon = createToken<IconProps, IconData>(
   (props) => props.children ?? <img src={props.iconUrl} />
 );
 
-function createImageIcon(props: ImgIconOptions): ImgIcon {
-  const icon = new LIcon(props);
+function createImageIcon(props: ImgIconProps): ImgIcon {
+  const opts = switchClassName<ImgIconOptions>(props);
+  const icon = new LIcon(opts);
 
-  createRenderEffect(() => (icon.options = trackDeep(props)));
+  createRenderEffect(() => (icon.options = trackDeep(opts)));
 
   return icon;
 }
 function createDivIcon(props: DivIconProps): LDivIcon {
-  const [, opts] = splitProps(props, ["children"]);
+  const opts = switchClassName<DivIconOptions>(
+    splitProps(props, ["children"])[1]
+  );
 
   const withHtml = mergeProps(opts, {
     html: (<>{props.children}</>) as HTMLElement,
@@ -76,7 +82,7 @@ function createDivIcon(props: DivIconProps): LDivIcon {
 
   const icon = new LDivIcon(withHtml);
 
-  createRenderEffect(() => (icon.options = trackDeep(opts)));
+  createRenderEffect(() => (icon.options = trackDeep(withHtml)));
 
   return icon;
 }

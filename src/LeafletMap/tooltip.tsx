@@ -5,50 +5,50 @@ import {
 import {
   type FlowProps,
   splitProps,
-  createRenderEffect,
-  mergeProps,
-  onCleanup,
-  createMemo,
+  //mergeProps,
   children,
+  onCleanup,
+  createRenderEffect,
 } from "solid-js";
 import {
-  //type LatLng,
+  //type LatLngExpression,
   Tooltip as LTooltip,
   type TooltipOptions as LTooltipOptions,
 } from "leaflet";
 import { trackDeep } from "@solid-primitives/deep";
 import { type TokenType, layerTokenizer } from "./tokens";
-import { SwitchClassName } from "./utils/className";
+import { type SwitchClassName, switchClassName } from "./utils/className";
 
 export interface TooltipData extends TokenType<"tooltip"> {
   tooltip: LTooltip;
   props: TooltipProps;
 }
 
-export type TooltipProps = FlowProps<SwitchClassName<LTooltipOptions>>;
+export type TooltipOpts = Omit<LTooltipOptions, "content">;
+export type TooltipProps = FlowProps<SwitchClassName<TooltipOpts>>;
 
 export const Tooltip = createToken<TooltipProps, TooltipData>(
   layerTokenizer as JSXTokenizer<TooltipData>,
   (props) => {
-    const [, cOpts, hOpts] = splitProps(props, ["children"], ["class"]);
-    const opts = mergeProps(hOpts, {
-      get className() {
-        return cOpts.class;
-      },
-    });
+    const opts = switchClassName<TooltipOpts>(
+      splitProps(props, ["children"])[1]
+    );
+
     const tooltip = new LTooltip(opts);
 
-    const childs = children(() => props.children);
-    const content = createMemo(() => (<>{childs()}</>) as HTMLElement);
-    createRenderEffect(() => tooltip.setContent(content()));
+    const content = children(() => props.children);
+    createRenderEffect(() =>
+      tooltip.setContent((<>{content()}</>) as HTMLElement)
+    );
     createRenderEffect(
       () => props.opacity && tooltip.setOpacity(props.opacity)
     );
+    // TODO: Only track what isn't being set automatically
     createRenderEffect(() => {
       tooltip.options = trackDeep(opts);
       tooltip.update();
     });
-    onCleanup(() => tooltip.remove());
+    onCleanup(tooltip.remove);
 
     return {
       type: "tooltip",

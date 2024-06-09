@@ -51,7 +51,6 @@ export const Marker = createToken<MarkerProps, MarkerData>(
       ["pos"]
     );
     const marker = new LMarker(info.pos, markerOpts);
-    // TODO: Dont just bruteforce the reactivity, do it right
 
     createRenderEffect(() => marker.setLatLng(info.pos));
     createRenderEffect(() => {
@@ -61,6 +60,7 @@ export const Marker = createToken<MarkerProps, MarkerData>(
       if (markerOpts.zIndexOffset)
         marker.setZIndexOffset(markerOpts.zIndexOffset);
     });
+    // TODO: Only track what isn't being set automatically
     createRenderEffect(() => (marker.options = trackDeep(markerOpts)));
 
     const tokens = resolveTokens(layerTokenizer, () => content.children);
@@ -70,7 +70,6 @@ export const Marker = createToken<MarkerProps, MarkerData>(
       switch (data.type) {
         case "icon":
           if (setIcon) throw new Error("You Have already provided an Icon");
-          // FIXME: Cancel render effect when the icon is removed?
           createSubRoot((yeet) => {
             createRenderEffect(() => marker.setIcon(data.icon));
 
