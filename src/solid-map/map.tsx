@@ -3,6 +3,7 @@ import {
   Map as LMap,
   type TileLayer as LTileLayer,
   type MapOptions as LMapOptions,
+  Util,
 } from "leaflet";
 
 import {
@@ -12,6 +13,7 @@ import {
   createRenderEffect,
   mapArray,
   onCleanup,
+  on,
 } from "solid-js";
 import { resolveTokens } from "@solid-primitives/jsx-tokenizer";
 import { createSubRoot } from "@solid-primitives/rootless";
@@ -24,12 +26,37 @@ export interface MapProps extends FlowProps<LMapOptions> {
   el: HTMLElement;
 }
 
+/*function setOpts<T>(obj: { options: T }, opts: T) {
+  return () => (obj.options = Util.setOptions(obj, opts) as T);
+}*/
+
 export const Map: FlowComponent<MapProps> = (props: MapProps) => {
   const [, opts] = splitProps(props, ["children", "el"]);
-  const map = new LMap(props.el, opts);
+  const map = new LMap(props.el);
+  map.options = Util.setOptions(map, opts);
+  const [view, trackedOpts] = splitProps(opts, [
+    "center",
+    "zoom",
+    "minZoom",
+    "maxZoom",
+    "maxBounds",
+  ]);
+  createRenderEffect(
+    on(
+      () => trackDeep(trackedOpts),
+      // TODO: Refresh the map ?
+      () => map
+    )
+  );
+  createRenderEffect(() => view.zoom && map.setZoom(view.zoom));
+  createRenderEffect(() => view.minZoom && map.setMinZoom(view.minZoom));
+  createRenderEffect(() => view.maxZoom && map.setMaxZoom(view.maxZoom));
+  createRenderEffect(() => view.center && map.setView(view.center));
+  createRenderEffect(() => view.maxBounds && map.setMaxBounds(view.maxBounds));
+
+  onCleanup(map.remove);
 
   const tokens = resolveTokens(mapTokenizer, () => props.children);
-
   let tile: LTileLayer | undefined;
   let attribution: LAttribution | undefined;
   mapArray(tokens, ({ data }) => {
@@ -59,13 +86,5 @@ export const Map: FlowComponent<MapProps> = (props: MapProps) => {
     }
   });
 
-  createRenderEffect(() => opts.zoom && map.setZoom(opts.zoom));
-  createRenderEffect(() => opts.minZoom && map.setMinZoom(opts.minZoom));
-  createRenderEffect(() => opts.maxZoom && map.setMaxZoom(opts.maxZoom));
-  createRenderEffect(() => opts.center && map.setView(opts.center));
-  createRenderEffect(() => (map.options = trackDeep(opts)));
-
-  onCleanup(map.remove);
-
-  return null;
+  return <div />;
 };
