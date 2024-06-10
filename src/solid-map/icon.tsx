@@ -77,7 +77,9 @@ function createDivIcon(props: DivIconProps): LDivIcon {
   );
 
   const withHtml = mergeProps(opts, {
-    html: (<>{props.children}</>) as HTMLElement,
+    html: (
+      <div class="size-full m-0! p-0!">{props.children}</div>
+    ) as HTMLDivElement,
   });
 
   const icon = new LDivIcon(withHtml);

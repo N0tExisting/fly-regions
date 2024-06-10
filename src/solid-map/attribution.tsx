@@ -12,9 +12,9 @@ import {
   createSignal,
   type JSX,
 } from "solid-js";
+import { Portal, Show } from "solid-js/web";
 import { Control, Map } from "leaflet";
 import { type TokenType, mapTokenizer } from "./tokens";
-import { Portal } from "solid-js/web";
 
 export type AttributionOptions = Omit<Control.AttributionOptions, "prefix">;
 export type SlimAttribution = Omit<
@@ -81,7 +81,11 @@ export const Attribution = createToken<AttributionProps, AttributionData>(
 
     const kids = children(() => props.children);
 
-    const content = <Portal mount={attribution.el}>{kids()}</Portal>;
+    const content = (
+      <Show when={attribution.el}>
+        {(el) => <Portal mount={el()}>{kids()}</Portal>}
+      </Show>
+    );
 
     return {
       type: "attribution",
