@@ -10,7 +10,7 @@ export default function Map() {
   const [target, setTarget] = createSignal<HTMLDivElement>();
   return (
     <div ref={setTarget} class="size-screen">
-      <LMap center={[27.5, 12.5]} zoom={3} el={target()}>
+      <LMap center={[27.5, 12.5]} zoom={3} el={target()} zoomSnap={0.5}>
         <LTileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <For each={data}>{(loc) => <Marker {...loc} />}</For>
         <Attributions />
