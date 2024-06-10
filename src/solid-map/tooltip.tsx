@@ -48,7 +48,7 @@ export const Tooltip = createToken<TooltipProps, TooltipData>(
       tooltip.options = trackDeep(opts);
       tooltip.update();
     });
-    onCleanup(tooltip.remove);
+    onCleanup(() => tooltip.remove);
 
     return {
       type: "tooltip",

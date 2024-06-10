@@ -52,7 +52,7 @@ export const Icon = createToken<IconProps, IconData>(
       ? createDivIcon(props)
       : createImageIcon(props as ImgIconProps);
 
-    onCleanup(icon.remove);
+    onCleanup(() => icon.remove);
 
     return {
       type: "icon",

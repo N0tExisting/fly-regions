@@ -33,7 +33,7 @@ export const TileLayer = createToken<TileLayerProps, TileLayerData>(
       tiles.options = trackDeep(opts);
       tiles.redraw();
     });
-    onCleanup(tiles.remove);
+    onCleanup(() => tiles.remove);
 
     return {
       type: "tile-layer",

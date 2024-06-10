@@ -77,7 +77,7 @@ export const Attribution = createToken<AttributionProps, AttributionData>(
     createRenderEffect(
       () => opts.position && attribution.setPosition(opts.position)
     );
-    onCleanup(attribution.remove);
+    onCleanup(() => attribution.remove);
 
     const kids = children(() => props.children);
 

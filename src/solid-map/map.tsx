@@ -54,7 +54,7 @@ export const Map: FlowComponent<MapProps> = (props: MapProps) => {
   createRenderEffect(() => view.center && map.setView(view.center));
   createRenderEffect(() => view.maxBounds && map.setMaxBounds(view.maxBounds));
 
-  onCleanup(map.remove);
+  onCleanup(() => map.remove);
 
   const tokens = resolveTokens(mapTokenizer, () => props.children);
   let tile: LTileLayer | undefined;

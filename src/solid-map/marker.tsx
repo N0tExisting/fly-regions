@@ -88,7 +88,7 @@ export const Marker = createToken<MarkerProps, MarkerData>(
       }
     });
 
-    onCleanup(marker.remove);
+    onCleanup(() => marker.remove);
 
     return {
       type: "marker",
