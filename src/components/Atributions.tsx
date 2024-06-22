@@ -1,6 +1,5 @@
-import { type Owner, runWithOwner, onCleanup } from "solid-js";
-import { render } from "solid-js/web";
-import type { Control } from "leaflet";
+import { LAttribution } from "../solid-map";
+import { LeafletAttribution, OSMAttribution } from "../solid-map/attributions";
 
 export const FlyAttribution = () => (
   <a href="https://fly.io/" rel="noopener noreferrer" target="_blank">
@@ -18,43 +17,20 @@ export const GitAttribution = () => (
   </a>
 );
 
-export const OSMAttribution = () => (
-  <a
-    href="https://openstreetmap.org/copyright"
-    rel="noopener noreferrer"
-    target="_blank"
-  >
-    OpenStreetMap
-  </a>
-);
-
 export const Spacer = () => <span> | </span>;
 
-export const Attrbutions = () => {
+export const Attributions = () => {
   return (
-    <>
+    <LAttribution>
+      <LeafletAttribution />
       <Spacer />
       <OSMAttribution />
       <Spacer />
       <FlyAttribution />
       <Spacer />
       <GitAttribution />
-    </>
+    </LAttribution>
   );
 };
 
-export default function renderAttributons(
-  o: Owner | null,
-  attrbutions: Control.Attribution
-) {
-  return runWithOwner(o, () => {
-    let unmout = render(
-      () => runWithOwner(o, Attrbutions),
-      attrbutions.getContainer()!
-    );
-    return onCleanup(() => {
-      unmout();
-      unmout = () => {};
-    });
-  });
-}
+export default Attributions;
