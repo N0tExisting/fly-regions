@@ -1,4 +1,4 @@
-import { lazy, Show } from "solid-js";
+import { lazy, splitProps, Show, children } from "solid-js";
 import type { MapProps } from "./map";
 
 function forLazy<M, K extends keyof M>(
@@ -14,7 +14,17 @@ export interface LMapProps extends Omit<MapProps, "el"> {
 }
 export function LMap(props: LMapProps) {
   Map.preload();
-  return <Show when={props.el}>{(el) => <Map {...props} el={el()} />}</Show>;
+  const [content, rest] = splitProps(props, ["children", "el"]);
+  const kids = children(() => content.children);
+  return (
+    <Show when={content.el}>
+      {(el) => (
+        <Map {...rest} el={el()}>
+          {kids()}
+        </Map>
+      )}
+    </Show>
+  );
 }
 
 export const LAttribution = lazy(() =>
@@ -27,3 +37,4 @@ export const LTileLayer = lazy(() =>
 export const LMarker = lazy(() => forLazy(import("./marker"), "Marker"));
 export const LTooltip = lazy(() => forLazy(import("./tooltip"), "Tooltip"));
 export const LIcon = lazy(() => forLazy(import("./icon"), "Icon"));
+export { Map };
