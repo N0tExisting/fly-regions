@@ -7,6 +7,7 @@ query {
       longitude
       gatewayAvailable
       requiresPaidPlan
+      #processGroup
     }
   }
 }
