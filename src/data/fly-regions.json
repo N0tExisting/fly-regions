@@ -76,7 +76,7 @@
     "name": "Secaucus, NJ (US)",
     "latitude": 40.789543,
     "longitude": -74.056534,
-    "gatewayAvailable": false,
+    "gatewayAvailable": true,
     "requiresPaidPlan": false
   },
   {
@@ -212,7 +212,7 @@
     "name": "Querétaro, Mexico",
     "latitude": 20.62,
     "longitude": -100.1863,
-    "gatewayAvailable": false,
+    "gatewayAvailable": true,
     "requiresPaidPlan": false
   },
   {
