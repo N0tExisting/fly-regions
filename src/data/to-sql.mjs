@@ -13,4 +13,4 @@ const values = data
 
 const sql = `INSERT INTO regions VALUES\n\t${values}\n;`;
 
-writeFileSync("./magic.sql", sql);
+writeFileSync("./data.sql", sql);
