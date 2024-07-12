@@ -6,7 +6,7 @@ const data = JSON.parse(file);
 
 const values = data
   .map((reg) => {
-    return `('${reg.code}','${reg.name}',${reg.gatewayAvailable},${reg.requiresPaidPlan},'SRID=4326;POINT(${reg.longitude} ${reg.latitude})')`;
+    return `('${reg.code}','${reg.name}',${reg.gatewayAvailable},${reg.requiresPaidPlan},'POINT(${reg.longitude} ${reg.latitude})')`;
   })
   .join(",\n\t")
   .trimEnd();
