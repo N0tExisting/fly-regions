@@ -34,7 +34,7 @@ To fix this, go into your dashboard, select Tokens _(at the bottom)_, then creat
 ```json
 {
   "Fly-GraphQL-Client": "playground",
-  "Authorization": "FlyV1 <rest of token>"
+  "Authorization": "FlyV1 <rest-of-token>"
 }
 ```
 

@@ -1,8 +1,8 @@
 /* @refresh reload */
 import { render } from "solid-js/web";
 
-import "uno.css";
 import App from "./App";
+import "uno.css";
 
 const root = document.getElementById("root") as HTMLDivElement;
 
